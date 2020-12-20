@@ -38,8 +38,8 @@ and auctionuser_detail.user_id = user.user_id
 order by offer desc
 limit 1`, [auction_id]);
 		if(all.length>0){
-			const insert = await db.pool.query(`Insert into pendings(user_id,auction_id) values(?,?);`, [all.user_id,auction_id]);
 			const info = all[0];
+			const insert = await db.pool.query(`Insert into pendings(user_id,auction_id) values(?,?);`, [info.user_id,auction_id]);
 			await subasta_ganada(info.email,info.offer,info.name,info.quantity,info.names+" "+info.lastnames,info.photo);
 			console.log("debió enviar correo a "+info.email);
 		} else {
