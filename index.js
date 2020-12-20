@@ -30,7 +30,7 @@ var j = await schedule.scheduleJob({ start: startTime, rule: '*/1 * * * * *' }, 
 	const auction = await db.pool.query(`SELECT * FROM auction where auction_id = ?`, [auction_id]);
 	if(auction[0].state == 1){
 		const auction_satate = await db.pool.query(`UPDATE auction SET state = 2 where auction_id = ?`, [auction_id]);
-		const all = await db.pool.query(`Select auction.name,auction.price,auction.quantity,auction.photo, auctionuser_detail.offer, user.names,user.lastnames,user.email
+		const all = await db.pool.query(`Select auction.name,auction.price,auction.quantity,auction.photo, auctionuser_detail.offer, user.names,user.lastnames,user.email, user.user_id
 from auction,auctionuser_detail,user 
 where auction.auction_id = ?
 and auction.auction_id = auctionuser_detail.auction_id
@@ -38,6 +38,7 @@ and auctionuser_detail.user_id = user.user_id
 order by offer desc
 limit 1`, [auction_id]);
 		if(all.length>0){
+			const insert = await db.pool.query(`Insert into pendings(user_id,auction_id) values(?,?);`, [all.user_id,auction_id]);
 			const info = all[0];
 			await subasta_ganada(info.email,info.offer,info.name,info.quantity,info.names+" "+info.lastnames,info.photo);
 			console.log("debió enviar correo a "+info.email);
