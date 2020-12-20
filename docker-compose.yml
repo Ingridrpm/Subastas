@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+    subastas:
+        container_name: subastas
+        build: .
+        volumes:
+          - '.:/app'
+          - './package.json:/package.json'
+        volumes:
+            - ".:/app"
+        ports:
+            - '3000:3000'
+        restart: always
